@@ -1,0 +1,211 @@
+#include<iostream>
+#include<string.h>
+#include<stdlib.h>
+using namespace std;
+typedef struct SE_IT_student_Details
+{
+	int roll;
+	char name[10];
+	float sgpa;
+
+}stud;
+
+void accept(stud s[],int n)
+{
+	int i;
+	cout<<"\n Enter the details of student(Roll no, Name ,Sgpa)";
+	for(i=0;i<n;i++)
+	cin>>s[i].roll>>s[i].name>>s[i].sgpa;
+
+}
+
+void display(stud s[],int n)
+{
+	int i;
+	cout<<"\n Sr.No.\tRoll no\tName\tSgpa"<<endl;
+	for(i=0;i<n;i++)
+	cout<<"\n i="<<i<<"\t"<<s[i].roll<<"\t"<<s[i].name<<"\t"<<s[i].sgpa;
+
+}
+
+void lSearch(stud s[],int n,float key)
+{
+	int i=0,flag=0;
+	while(i<n)
+	{
+		if(key==s[i].sgpa)
+		{
+			cout<<"\n Student found at location"<<i<<endl;
+			cout<<s[i].roll<<"\t"<<s[i].name<<"\t"<<s[i].sgpa;
+			flag=1;
+		}
+		i++;
+	}
+	if(flag==0)
+	cout<<"\n Student not found";
+}
+
+int bsearch_name(stud s[],int n,char key1[])
+{
+	int l=0,h=n-1,m=0;
+	while(l<=h)
+	{
+		m=(l+h)/2;
+		cout<<"\n m="<<m;
+		if(strcmp(s[m].name,key1)==0)
+		return m;
+		else if(strcmp(s[m].name,key1)>0)
+		h=m-1;
+		else
+		l=m+1;
+	}
+	return -1;	
+	
+}
+
+void bubblesort_roll(stud s[],int n)
+{
+	int i,j;
+	stud temp;
+	for(i=0;i<n;i++)
+	{
+		for(j=0;j<n;j++)
+		{
+			if(s[j].roll>s[j+1].roll)
+			{
+				temp=s[j];
+				s[j]=s[j+1];
+				s[j+1]=temp;
+			}
+		}
+	}
+
+}
+
+void insertionsort_roll(stud s[],int n)
+{
+	int i,j;
+	stud temp;
+	for(i=0;i<n;i++)
+	{
+		temp=s[i];
+		for(j=i-1;j>=0 && strcmp(temp.name,s[j].name)<0;j--)
+		{
+			s[j+1]=s[j];
+		}
+		s[j+1]=temp;
+	}
+
+}
+
+int partition(stud a[],int l,int h)
+{
+	int i,j;
+	stud temp,pvt;
+	pvt=a[l];
+	i=l+1;
+	j=h;
+
+	while(i<=j)
+	{
+		while (a[i].sgpa<=pvt.sgpa)
+		i++;
+		while(a[j].sgpa>pvt.sgpa)
+		j--;
+		if(i<j)
+		{
+			temp=a[i];
+			a[i]=a[j];
+			a[j]=temp;
+
+		}
+	}
+	a[l]=a[j];
+	a[j]=pvt;
+	return j;
+
+}
+void quick_sort(stud a[],int l,int h)
+	{
+		int j;
+		if(l<h)
+		{
+			j=partition(a,l,h);
+			quick_sort(a,l,j-1);
+			quick_sort(a,j+1,h);
+
+		}
+
+	}
+void quick_display(stud s[],int n,int t)
+{
+	int i=1;
+	int cnt=1;
+	for(i=n;cnt<=t;i--)
+	{
+		cout<<"\n i="<<i<<s[i].roll<<"\t"<<s[i].name<<"\t"<<s[i].sgpa;
+		cnt++;
+	}
+}			
+
+int main()
+{
+	int r,ch,n;
+	float key_sgpa;
+	stud s[10];
+	char key1[20];
+	cout<<"\n Enter no. of student";
+	cin>>n;
+	accept(s,n);
+	cout<<"\n Enter the student detail";
+	display(s,n);
+
+	while(1)
+	{
+		cout<<"\n Menu";
+		cout<<"\n1.Linear Search for sgpa \n2.Binary Search with name \n3.Bubble sort with roll no \n4.Insertion sort with name \n5.Quick sort for topper \n6.exit ";
+		cout<<"\n Enter your choice";
+		cin>>ch;
+		switch(ch)
+		{
+			case 1:
+					cout<<"\n Enter the key to linear search";
+					cin>>key_sgpa;
+					lSearch(s,n,key_sgpa);
+					break;
+			case 2:
+					cout<<"\n  Enter key to Binary Search";
+					cin>>key1;
+					insertionsort_roll(s,n);
+					cout<<"\n\n";
+					display(s,n);
+					cout<<"\n\n";
+					r=bsearch_name(s,n,key1);
+					if(r==-1)
+					cout<<"\n key not found"<<endl;
+					else
+					{
+						cout<<key1<<"found at location"<<r;
+					}
+					break;
+			case 3:
+					bubblesort_roll(s,n);
+					cout<<"\n After sorting on roll no. detail as below";
+					display(s,n);
+					break;
+			case 4:
+					insertionsort_roll(s,n);
+					display(s,n);
+					break;
+			case 5:
+					quick_sort(s,0,n-1);
+					cout<<"\n After the sorting according SGPA Toppers";
+					quick_display(s,n-1,3);
+					break;
+			case 6:
+					exit(0);
+					
+		}
+	}
+return 0;
+}

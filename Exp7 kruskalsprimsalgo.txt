@@ -1,0 +1,209 @@
+#include<iostream>
+#include<string.h>
+using namespace std;
+class Graph
+{
+    char Vnames[10][10];
+    int cost[10][10], n;
+    public:
+    Graph ()
+    {
+        for (int i = 0; i < 10; i++)
+        for (int j = 0; j < 10; j++)
+        {
+            cost[i][j] = 999;
+        }
+    }
+    void creat_graph ();
+    void display ();
+    int Position (char[]);
+    void kru ();
+    void prims ();
+};
+void
+Graph::creat_graph ()
+{
+    char ans, Start[10], End[10];
+    int wt, i, j;
+    cout << "\nEnter no of nodes: ";
+    cin >> n;
+    cout << "\nEnter vertex name: ";
+    for (i = 0; i < n; i++)
+    cin >> Vnames[i];
+    do
+    {
+        cout << "Enter starting edge: " << endl;
+        cin >> Start;
+        cout << "Enter end of edge: " << endl;
+        cin >> End;
+        cout << "\n Enter weight: " << endl;
+        cin >> wt;
+        i = Position (Start);
+        j = Position (End);
+        cost[j][i] = cost[i][j] = wt;
+        cout << "If you want to create more edges then write (Y/N)" <<
+        endl;
+        cin >> ans;
+    }
+    while (ans == 'y' || ans == 'Y');
+}
+void
+Graph::display ()
+{
+    int i, j;
+    for (i = 0; i < n; i++)
+    {
+        cout << endl;
+        for (j = 0; j < n; j++)
+        cout << cost[i][j] << "\t";
+    }
+}
+int
+Graph::Position (char key[10])
+{
+    int i;
+    for (i = 0; i < n; i++)
+    if (strcmp (Vnames[i], key) == 0)
+    break;
+    return i;
+}
+void
+Graph::kru ()
+{
+    int i, j, v[10], x, y, Total_cost = 0, min, gr = 1, flag = 1, temp, d;
+    for (i = 0; i < n; i++)
+    v[i] = 0;
+    cout << "\n Node 1\tNode 2\tWeight";
+    while (flag == 0)
+    {
+        min = 999;
+        for (i = 0; i < n; i++)
+        {
+            for (j = 0; j < n; j++)
+            {
+                if (cost[i][j] < min)
+                {
+                    min = cost[i][j];
+                    x = i;
+                    y = j;
+                }
+            }
+        }
+    }
+    if (v[x] == 0 && v[y] == 0)
+    {
+        v[x] = gr;
+        v[y] = gr;
+        gr++;
+        cost[x][y] = cost[y][x] = 999;
+        Total_cost = Total_cost + min;
+        cout << "\n" << x << "\t" << y << "\t" << min;
+    }
+    else if (v[x] != 0 && v[y] == 0)
+    {
+        v[y] = v[x];
+        cost[x][y] = cost[y][x] = 999;
+        Total_cost = Total_cost + min;
+        cout << "\n" << x << "\t" << y << "\t" << min;
+    }
+    else if (v[x] == 0 && v[y] != 0)
+    {
+        v[x] = v[y];
+        cost[x][y] = cost[y][x] = 999;
+        Total_cost = Total_cost + min;
+        cout << "\n" << x << "\t" << y << "\t" << min;
+    }
+    else
+    {
+        if (v[x] != v[y])
+        {
+            d = v[x];
+            for (i = 0; i < n; i++)
+            {
+                if (v[i] == d)
+                v[i] = v[y];
+            }
+            cost[x][y] = cost[y][x] = 999;
+            Total_cost = Total_cost + min;
+            cout << "\n" << x << "\t" << y << "\t" << min;
+        }
+        else
+        cost[x][y] = cost[y][x] = 999;
+    }
+    temp = v[0];
+    flag = 1;
+    for (i = 0; i < n; i++)
+    {
+        if (temp != v[i])
+        {
+            flag = 0;
+            break;
+        }
+        else
+        continue;
+    }
+    cout << "\n Total cost of tree is = " << Total_cost;
+}
+void
+Graph::prims ()
+{
+    int cnt = 1, i, j, x, y, Total_cost = 0, min, v[10] = { 0 };
+    char start[10];
+    cout << "Starting node is = " << endl;
+    cin >> start;
+    x = Position (start);
+    v[x] = 1;
+    while (cnt < n)
+    {
+        min = 999;
+        for (i = 0; i < n; i++)
+        {
+            if (v[i] == 1)
+            {
+                for (j = 0; j < n; j++)
+                {
+                    if (cost[i][j] < min && v[j] == 0)
+                    {
+                        min = cost[i][j];
+                        x = i;
+                        y = j;
+                    }
+                }
+            }
+        }
+        cout << "\n" << Vnames[x] << "\t" << Vnames[y] << "\t" << min;
+        Total_cost = Total_cost + min;
+        cost[x][y] = cost[y][x] = 999;
+        v[y] = 1;
+        cnt++;
+    }
+    cout << "Total cost = " << Total_cost;
+}
+int main ()
+{
+    Graph ob;
+    int ch;
+    do
+    {
+        cout << " \n1.Kruskal Algorithm \n2.Prims Algorithm \n3.Exit" <<
+        endl;
+        cout << "Choice: " << endl;
+        cin >> ch;
+        switch (ch)
+        {
+            case 1:
+                ob.creat_graph ();
+                ob.display ();
+                ob.kru ();
+            case 2:
+                ob.creat_graph ();
+                ob.display ();
+                ob.prims ();
+                break;
+            case 3:
+                exit (0);
+        }
+    }
+    while (ch != 4);
+    return 0;
+}
